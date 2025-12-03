@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Send, Bot, User } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface Message {
   id: string;
@@ -69,68 +70,70 @@ export function Chat() {
   };
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full min-h-0">
       {/* Messages */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-4">
-        {messages.map((message) => (
-          <div
-            key={message.id}
-            className={cn(
-              "flex gap-3",
-              message.role === "user" ? "flex-row-reverse" : "flex-row"
-            )}
-          >
+      <ScrollArea className="flex-1 min-h-0">
+        <div className="p-4 space-y-4">
+          {messages.map((message) => (
             <div
+              key={message.id}
               className={cn(
-                "w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0",
-                message.role === "user"
-                  ? "gradient-bg"
-                  : "bg-secondary"
+                "flex gap-3",
+                message.role === "user" ? "flex-row-reverse" : "flex-row"
               )}
             >
-              {message.role === "user" ? (
-                <User className="w-4 h-4 text-primary-foreground" />
-              ) : (
-                <Bot className="w-4 h-4 text-primary" />
-              )}
-            </div>
-            <div
-              className={cn(
-                "max-w-[80%] rounded-2xl px-4 py-3",
-                message.role === "user"
-                  ? "bg-primary text-primary-foreground rounded-br-md"
-                  : "bg-secondary text-secondary-foreground rounded-bl-md"
-              )}
-            >
-              <p className="text-sm leading-relaxed">{message.content}</p>
-              <span className="text-xs opacity-60 mt-1 block">
-                {message.timestamp.toLocaleTimeString("pt-BR", {
-                  hour: "2-digit",
-                  minute: "2-digit",
-                })}
-              </span>
-            </div>
-          </div>
-        ))}
-        {isLoading && (
-          <div className="flex gap-3">
-            <div className="w-8 h-8 rounded-lg bg-secondary flex items-center justify-center">
-              <Bot className="w-4 h-4 text-primary" />
-            </div>
-            <div className="bg-secondary rounded-2xl rounded-bl-md px-4 py-3">
-              <div className="flex gap-1">
-                <span className="w-2 h-2 bg-primary/60 rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
-                <span className="w-2 h-2 bg-primary/60 rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
-                <span className="w-2 h-2 bg-primary/60 rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
+              <div
+                className={cn(
+                  "w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0",
+                  message.role === "user"
+                    ? "gradient-bg"
+                    : "bg-secondary"
+                )}
+              >
+                {message.role === "user" ? (
+                  <User className="w-4 h-4 text-primary-foreground" />
+                ) : (
+                  <Bot className="w-4 h-4 text-primary" />
+                )}
+              </div>
+              <div
+                className={cn(
+                  "max-w-[80%] rounded-2xl px-4 py-3",
+                  message.role === "user"
+                    ? "bg-primary text-primary-foreground rounded-br-md"
+                    : "bg-secondary text-secondary-foreground rounded-bl-md"
+                )}
+              >
+                <p className="text-sm leading-relaxed">{message.content}</p>
+                <span className="text-xs opacity-60 mt-1 block">
+                  {message.timestamp.toLocaleTimeString("pt-BR", {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })}
+                </span>
               </div>
             </div>
-          </div>
-        )}
-        <div ref={messagesEndRef} />
-      </div>
+          ))}
+          {isLoading && (
+            <div className="flex gap-3">
+              <div className="w-8 h-8 rounded-lg bg-secondary flex items-center justify-center">
+                <Bot className="w-4 h-4 text-primary" />
+              </div>
+              <div className="bg-secondary rounded-2xl rounded-bl-md px-4 py-3">
+                <div className="flex gap-1">
+                  <span className="w-2 h-2 bg-primary/60 rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
+                  <span className="w-2 h-2 bg-primary/60 rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
+                  <span className="w-2 h-2 bg-primary/60 rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
+                </div>
+              </div>
+            </div>
+          )}
+          <div ref={messagesEndRef} />
+        </div>
+      </ScrollArea>
 
       {/* Input */}
-      <div className="border-t p-4">
+      <div className="flex-shrink-0 border-t p-4 bg-background">
         <div className="flex gap-2">
           <Input
             value={input}

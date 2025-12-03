@@ -1,100 +1,211 @@
 import { useState } from "react";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { FileText, BarChart3, TrendingUp, Users } from "lucide-react";
+import { ChartCard } from "@/components/dashboard/ChartCard";
+import { KPICard } from "@/components/dashboard/KPICard";
+import { DataTable } from "@/components/dashboard/DataTable";
+import { Plus, X, Users, DollarSign, ShoppingCart, TrendingUp } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
-interface ContextItem {
-  id: string;
-  label: string;
-  value: string;
-  icon: React.ReactNode;
-}
-
-const defaultContext: ContextItem[] = [
+// Dashboard data
+const dashboardOptions = [
   {
-    id: "dataset",
-    label: "Dataset",
-    value: "Vendas_2024.xlsx",
-    icon: <FileText className="w-4 h-4" />,
+    id: "kpi-usuarios",
+    name: "KPI - Total de Usuários",
+    type: "kpi" as const,
+    data: { title: "Total de Usuários", value: "12,543", change: 12.5, changeLabel: "vs mês anterior", icon: <Users className="w-5 h-5 text-primary" /> },
   },
   {
-    id: "periodo",
-    label: "Período",
-    value: "Janeiro - Junho 2024",
-    icon: <BarChart3 className="w-4 h-4" />,
+    id: "kpi-receita",
+    name: "KPI - Receita Total",
+    type: "kpi" as const,
+    data: { title: "Receita Total", value: "R$ 156.789", change: 8.2, changeLabel: "vs mês anterior", icon: <DollarSign className="w-5 h-5 text-primary" /> },
   },
   {
-    id: "metricas",
-    label: "Métricas Principais",
-    value: "Vendas, Receita, Conversão",
-    icon: <TrendingUp className="w-4 h-4" />,
+    id: "kpi-vendas",
+    name: "KPI - Vendas",
+    type: "kpi" as const,
+    data: { title: "Vendas", value: "3,456", change: -2.4, changeLabel: "vs mês anterior", icon: <ShoppingCart className="w-5 h-5 text-primary" /> },
   },
   {
-    id: "segmentacao",
-    label: "Segmentação",
-    value: "Por produto e região",
-    icon: <Users className="w-4 h-4" />,
+    id: "kpi-conversao",
+    name: "KPI - Taxa de Conversão",
+    type: "kpi" as const,
+    data: { title: "Taxa de Conversão", value: "4.28%", change: 15.3, changeLabel: "vs mês anterior", icon: <TrendingUp className="w-5 h-5 text-primary" /> },
+  },
+  {
+    id: "chart-vendas-tempo",
+    name: "Gráfico - Vendas ao Longo do Tempo",
+    type: "chart" as const,
+    chartType: "area" as const,
+    data: [
+      { name: "Jan", value: 4000 },
+      { name: "Fev", value: 3000 },
+      { name: "Mar", value: 5000 },
+      { name: "Abr", value: 4500 },
+      { name: "Mai", value: 6000 },
+      { name: "Jun", value: 5500 },
+    ],
+  },
+  {
+    id: "chart-vendas-produto",
+    name: "Gráfico - Vendas por Produto",
+    type: "chart" as const,
+    chartType: "bar" as const,
+    data: [
+      { name: "Produto A", value: 4000 },
+      { name: "Produto B", value: 3000 },
+      { name: "Produto C", value: 2000 },
+      { name: "Produto D", value: 2780 },
+      { name: "Produto E", value: 1890 },
+    ],
+  },
+  {
+    id: "chart-distribuicao",
+    name: "Gráfico - Distribuição por Categoria",
+    type: "chart" as const,
+    chartType: "pie" as const,
+    data: [
+      { name: "Categoria A", value: 400 },
+      { name: "Categoria B", value: 300 },
+      { name: "Categoria C", value: 200 },
+      { name: "Categoria D", value: 100 },
+    ],
+  },
+  {
+    id: "table-produtos",
+    name: "Tabela - Top Produtos",
+    type: "table" as const,
+    data: {
+      headers: ["Produto", "Vendas", "Receita", "Crescimento"],
+      rows: [
+        ["Produto Premium", "1,234", "R$ 45.678", "+12%"],
+        ["Produto Standard", "2,345", "R$ 34.567", "+8%"],
+        ["Produto Basic", "3,456", "R$ 23.456", "+5%"],
+        ["Produto Lite", "4,567", "R$ 12.345", "+3%"],
+        ["Produto Free", "5,678", "R$ 5.678", "+1%"],
+      ],
+    },
   },
 ];
 
-export function ContextPanel() {
-  const [context, setContext] = useState<ContextItem[]>(defaultContext);
-  const [notes, setNotes] = useState("");
+type DashboardOption = typeof dashboardOptions[number];
 
-  const updateContext = (id: string, value: string) => {
-    setContext((prev) =>
-      prev.map((item) => (item.id === id ? { ...item, value } : item))
-    );
+export function ContextPanel() {
+  const [selectedDashboards, setSelectedDashboards] = useState<DashboardOption[]>([]);
+
+  const addDashboard = (dashboard: DashboardOption) => {
+    if (!selectedDashboards.find((d) => d.id === dashboard.id)) {
+      setSelectedDashboards((prev) => [...prev, dashboard]);
+    }
+  };
+
+  const removeDashboard = (id: string) => {
+    setSelectedDashboards((prev) => prev.filter((d) => d.id !== id));
+  };
+
+  const availableDashboards = dashboardOptions.filter(
+    (d) => !selectedDashboards.find((s) => s.id === d.id)
+  );
+
+  const renderDashboard = (dashboard: DashboardOption) => {
+    switch (dashboard.type) {
+      case "kpi":
+        return (
+          <KPICard
+            title={dashboard.data.title}
+            value={dashboard.data.value}
+            change={dashboard.data.change}
+            changeLabel={dashboard.data.changeLabel}
+            icon={dashboard.data.icon}
+          />
+        );
+      case "chart":
+        return (
+          <ChartCard
+            title={dashboard.name.replace("Gráfico - ", "")}
+            type={dashboard.chartType!}
+            data={dashboard.data as any[]}
+          />
+        );
+      case "table":
+        return (
+          <DataTable
+            title={dashboard.name.replace("Tabela - ", "")}
+            headers={(dashboard.data as any).headers}
+            rows={(dashboard.data as any).rows}
+          />
+        );
+    }
   };
 
   return (
     <div className="flex flex-col h-full">
-      <div className="p-4 border-b">
-        <h3 className="font-display font-semibold text-lg">Contexto da Análise</h3>
-        <p className="text-sm text-muted-foreground">
-          Edite as informações para personalizar as respostas da IA
-        </p>
-      </div>
-
-      <div className="flex-1 overflow-y-auto p-4 space-y-4">
-        {context.map((item) => (
-          <div key={item.id} className="space-y-2">
-            <Label className="flex items-center gap-2">
-              <span className="w-6 h-6 rounded bg-primary/10 flex items-center justify-center text-primary">
-                {item.icon}
-              </span>
-              {item.label}
-            </Label>
-            <Input
-              value={item.value}
-              onChange={(e) => updateContext(item.id, e.target.value)}
-            />
-          </div>
-        ))}
-
-        <div className="space-y-2">
-          <Label>Notas Adicionais</Label>
-          <Textarea
-            value={notes}
-            onChange={(e) => setNotes(e.target.value)}
-            placeholder="Adicione informações extras que possam ajudar a IA..."
-            className="min-h-[120px] resize-none"
-          />
+      <div className="p-4 border-b flex items-center justify-between">
+        <div>
+          <h3 className="font-display font-semibold text-lg">Contexto</h3>
+          <p className="text-sm text-muted-foreground">
+            Adicione dashboards para contextualizar a IA
+          </p>
         </div>
-
-        <Card variant="glass" className="mt-4">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm">Dica</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-xs text-muted-foreground">
-              Quanto mais contexto você fornecer, mais precisas serão as respostas da IA sobre seus dados.
-            </p>
-          </CardContent>
-        </Card>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="gradient" size="sm" disabled={availableDashboards.length === 0}>
+              <Plus className="w-4 h-4 mr-2" />
+              Adicionar Dashboard
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-64 bg-popover z-50">
+            {availableDashboards.map((dashboard) => (
+              <DropdownMenuItem
+                key={dashboard.id}
+                onClick={() => addDashboard(dashboard)}
+                className="cursor-pointer"
+              >
+                {dashboard.name}
+              </DropdownMenuItem>
+            ))}
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
+
+      <ScrollArea className="flex-1">
+        <div className="p-4 space-y-4">
+          {selectedDashboards.length === 0 ? (
+            <Card variant="glass">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm">Nenhum dashboard selecionado</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-xs text-muted-foreground">
+                  Clique em "Adicionar Dashboard" para incluir visualizações como contexto para a IA. 
+                  Quanto mais contexto você fornecer, mais precisas serão as respostas.
+                </p>
+              </CardContent>
+            </Card>
+          ) : (
+            selectedDashboards.map((dashboard) => (
+              <div key={dashboard.id} className="relative group">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="absolute -top-2 -right-2 z-10 h-6 w-6 rounded-full bg-destructive text-destructive-foreground opacity-0 group-hover:opacity-100 transition-opacity"
+                  onClick={() => removeDashboard(dashboard.id)}
+                >
+                  <X className="w-3 h-3" />
+                </Button>
+                {renderDashboard(dashboard)}
+              </div>
+            ))
+          )}
+        </div>
+      </ScrollArea>
     </div>
   );
 }
