@@ -39,7 +39,7 @@ export function HowItWorks() {
             >
               {/* Connector line */}
               {index < steps.length - 1 && (
-                <div className="hidden md:block absolute top-12 left-[60%] w-[80%] h-0.5 bg-gradient-to-r from-primary/30 to-transparent" />
+                <div className="hidden md:block absolute top-12 left-[68%] w-[80%] h-0.5 bg-gradient-to-r from-primary/30 to-transparent" />
               )}
               
               <div className="w-24 h-24 mx-auto mb-6 rounded-2xl gradient-bg flex items-center justify-center shadow-lg group-hover:shadow-glow transition-shadow duration-300">

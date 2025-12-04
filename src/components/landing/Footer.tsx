@@ -11,7 +11,7 @@ export function Footer() {
               <div className="w-9 h-9 rounded-lg bg-primary flex items-center justify-center">
                 <BarChart3 className="w-5 h-5 text-primary-foreground" />
               </div>
-              <span className="font-display font-bold text-xl">DataInsight</span>
+              <span className="font-display font-bold text-xl">Project BIB</span>
             </Link>
             <p className="text-background/70 max-w-sm mb-6">
               Transformando dados em insights acionáveis com o poder da inteligência artificial.
@@ -52,7 +52,7 @@ export function Footer() {
 
         <div className="border-t border-background/10 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-background/50 text-sm">
-            © 2024 DataInsight. Todos os direitos reservados.
+            © 2024 Project BIB. Todos os direitos reservados.
           </p>
           <div className="flex gap-6 text-sm text-background/50">
             <a href="#" className="hover:text-background transition-colors">Termos de Uso</a>
