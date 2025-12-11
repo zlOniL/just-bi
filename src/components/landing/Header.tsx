@@ -10,7 +10,7 @@ export function Header() {
           <div className="w-9 h-9 rounded-lg gradient-bg flex items-center justify-center">
             <BarChart3 className="w-5 h-5 text-primary-foreground" />
           </div>
-          <span className="font-display font-bold text-xl">Project BIB</span>
+          <span className="font-display font-bold text-xl">Just BI</span>
         </Link>
         
         <nav className="hidden md:flex items-center gap-8">

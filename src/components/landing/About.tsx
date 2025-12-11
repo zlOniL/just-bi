@@ -19,7 +19,7 @@ export function About() {
               Sobre o Projeto
             </h2>
             <p className="text-muted-foreground text-lg mb-6">
-              O Project BIB nasceu da necessidade de democratizar a análise de dados. 
+              O Just BI nasceu da necessidade de democratizar a análise de dados. 
               Acreditamos que toda empresa, independentemente do tamanho, deve ter acesso 
               a ferramentas poderosas de Business Intelligence.
             </p>

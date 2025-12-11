@@ -20,7 +20,7 @@ export function Hero() {
           
           <h1 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6 animate-slide-up">
             Transforme seus dados em{" "}
-            <span className="gradient-text">insights acionáveis</span>
+            <span className="gradient-text">insights inteligentes</span>
           </h1>
           
           <p className="text-lg md:text-xl text-muted-foreground mb-10 max-w-2xl mx-auto animate-slide-up" style={{ animationDelay: "0.1s" }}>
@@ -42,7 +42,7 @@ export function Hero() {
           </div>
 
           {/* Stats */}
-          <div className="grid grid-cols-3 gap-8 mt-16 max-w-xl mx-auto animate-slide-up" style={{ animationDelay: "0.3s" }}>
+          {/* <div className="grid grid-cols-3 gap-8 mt-16 max-w-xl mx-auto animate-slide-up" style={{ animationDelay: "0.3s" }}>
             <div>
               <div className="text-3xl font-display font-bold text-foreground">10K+</div>
               <div className="text-sm text-muted-foreground">Usuários ativos</div>
@@ -55,7 +55,7 @@ export function Hero() {
               <div className="text-3xl font-display font-bold text-foreground">99%</div>
               <div className="text-sm text-muted-foreground">Satisfação</div>
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
     </section>

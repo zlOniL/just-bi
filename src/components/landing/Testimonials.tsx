@@ -3,7 +3,7 @@ import { Quote } from "lucide-react";
 
 const testimonials = [
   {
-    quote: "O Project BIB transformou completamente a forma como analisamos nossas vendas. Insights que levavam dias agora aparecem em minutos.",
+    quote: "O Just BI transformou completamente a forma como analisamos nossas vendas. Insights que levavam dias agora aparecem em minutos.",
     author: "Maria Silva",
     role: "Diretora de Vendas",
     company: "TechCorp",
