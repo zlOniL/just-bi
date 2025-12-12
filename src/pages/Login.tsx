@@ -21,7 +21,7 @@ export default function Login() {
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
           <CardTitle className="text-2xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-            Project BIB
+            Just BI
           </CardTitle>
           <CardDescription>
             Faça login ou crie uma conta para continuar
