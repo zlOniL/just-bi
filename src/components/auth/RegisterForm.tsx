@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
+import { supabase } from "@/functions/supabase/connection";
 
 export function RegisterForm() {
   const navigate = useNavigate();
@@ -15,7 +16,6 @@ export function RegisterForm() {
     fullName: "",
     email: "",
     phone: "",
-    username: "",
     password: "",
     confirmPassword: "",
   });
@@ -33,15 +33,48 @@ export function RegisterForm() {
     }
 
     setIsLoading(true);
-    // Simular registro
-    setTimeout(() => {
-      setIsLoading(false);
+    
+    try {
+      // Create user with Supabase Auth
+      const { data, error } = await supabase.auth.signUp({
+        email: formData.email,
+        password: formData.password,
+        options: {
+          data: {
+            full_name: formData.fullName,
+            phone: formData.phone,
+          }
+        }
+      });
+
+      if (error) {
+        toast({
+          title: "Erro no registro",
+          description: error.message,
+          variant: "destructive",
+        });
+        setIsLoading(false);
+        return;
+      }
+
+      // Successful registration
       toast({
         title: "Conta criada!",
-        description: "Você será redirecionado para o sistema.",
+        description: "Verifique seu email para confirmar sua conta.",
       });
-      navigate("/app");
-    }, 1000);
+      
+      // Navigate to app or login page after successful registration
+      setTimeout(() => {
+        navigate("/");
+      }, 1000);
+    } catch (error) {
+      toast({
+        title: "Erro",
+        description: "Ocorreu um erro inesperado. Tente novamente.",
+        variant: "destructive",
+      });
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -81,18 +114,6 @@ export function RegisterForm() {
             required
           />
         </div>
-      </div>
-
-      <div className="space-y-2">
-        <Label htmlFor="reg-username">Usuário</Label>
-        <Input
-          id="reg-username"
-          type="text"
-          placeholder="Escolha um nome de usuário"
-          value={formData.username}
-          onChange={(e) => setFormData({ ...formData, username: e.target.value })}
-          required
-        />
       </div>
 
       <div className="grid grid-cols-2 gap-4">

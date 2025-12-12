@@ -4,36 +4,70 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
+import { supabase } from "@/functions/supabase/connection";
+import { toast } from "@/components/ui/use-toast";
+
 
 export function LoginForm() {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
-    username: "",
+    email: "",
     password: "",
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    // Simular login
-    setTimeout(() => {
+    
+    try {
+      // Sign in with Supabase Auth
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: formData.email,
+        password: formData.password,
+      });
+
+      if (error) {
+        toast({
+          title: "Erro no login",
+          description: error.message,
+          variant: "destructive",
+        });
+        setIsLoading(false);
+        return;
+      }
+
+      // Successful login
+      toast({
+        title: "Login bem-sucedido!",
+        description: "Você será redirecionado para o sistema.",
+      });
+      
+      // Navigate to app after successful login
+      setTimeout(() => {
+        navigate("/app");
+      }, 500);
+    } catch (error) {
+      toast({
+        title: "Erro",
+        description: "Ocorreu um erro inesperado. Tente novamente.",
+        variant: "destructive",
+      });
       setIsLoading(false);
-      navigate("/app");
-    }, 1000);
+    }
   };
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div className="space-y-2">
-        <Label htmlFor="username">Usuário</Label>
+        <Label htmlFor="email">E-mail</Label>
         <Input
-          id="username"
+          id="email"
           type="text"
-          placeholder="Seu nome de usuário"
-          value={formData.username}
-          onChange={(e) => setFormData({ ...formData, username: e.target.value })}
+          placeholder="Insira seu e-mail"
+          value={formData.email}
+          onChange={(e) => setFormData({ ...formData, email: e.target.value })}
           required
         />
       </div>
@@ -44,7 +78,7 @@ export function LoginForm() {
           <Input
             id="password"
             type={showPassword ? "text" : "password"}
-            placeholder="Sua senha"
+            placeholder="Insira sua senha"
             value={formData.password}
             onChange={(e) => setFormData({ ...formData, password: e.target.value })}
             required
@@ -60,10 +94,10 @@ export function LoginForm() {
       </div>
 
       <div className="flex items-center justify-between">
-        <label className="flex items-center gap-2 text-sm">
+        {/* <label className="flex items-center gap-2 text-sm">
           <input type="checkbox" className="rounded border-input" />
           Lembrar-me
-        </label>
+        </label> */}
         <a href="#" className="text-sm text-primary hover:underline">
           Esqueci minha senha
         </a>

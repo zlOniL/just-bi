@@ -1,6 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { BarChart3, LogOut, MessageSquare } from "lucide-react";
+import { useAuth } from "@/components/session/AuthContext";
 
 interface AppHeaderProps {
   showChatButton?: boolean;
@@ -9,8 +10,10 @@ interface AppHeaderProps {
 
 export function AppHeader({ showChatButton, onChatClick }: AppHeaderProps) {
   const navigate = useNavigate();
+  const { signOut } = useAuth();
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    await signOut();
     navigate("/");
   };
 

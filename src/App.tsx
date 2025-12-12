@@ -8,6 +8,9 @@ import Login from "./pages/Login";
 import AppUpload from "./pages/AppUpload";
 import AppDashboards from "./pages/AppDashboards";
 import NotFound from "./pages/NotFound";
+import { AuthProvider } from "./components/session/AuthContext";
+import { ProtectedRoute } from "./components/session/ProtectedRoute";
+import { RedirectIfAuthenticated } from "./components/session/RedirectIfAuthenticated";
 
 const queryClient = new QueryClient();
 
@@ -17,14 +20,37 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/app" element={<AppUpload />} />
-          <Route path="/app/dashboards" element={<AppDashboards />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
+        <AuthProvider>
+          <Routes>
+            <Route path="/" element={<Index />} />
+            <Route 
+              path="/login" 
+              element={
+                <RedirectIfAuthenticated>
+                  <Login />
+                </RedirectIfAuthenticated>
+              } 
+            />
+            <Route 
+              path="/app" 
+              element={
+                <ProtectedRoute>
+                  <AppUpload />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/app/dashboards" 
+              element={
+                <ProtectedRoute>
+                  <AppDashboards />
+                </ProtectedRoute>
+              } 
+            />
+            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </AuthProvider>
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>
