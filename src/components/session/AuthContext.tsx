@@ -5,6 +5,7 @@ import { Session } from '@supabase/supabase-js';
 
 interface AuthContextType {
   session: Session | null;
+  user: Session['user'] | null;
   loading: boolean;
   signOut: () => Promise<void>;
 }
@@ -37,8 +38,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     navigate('/login');
   };
 
+  const user = session?.user ?? null;
+
   const value = {
     session,
+    user,
     loading,
     signOut
   };
@@ -49,7 +53,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 export function useAuth() {
   const context = useContext(AuthContext);
   if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider');
+    throw new Error('useAuth precisa ser utilizaco com um AuthProvider');
   }
   return context;
 }
